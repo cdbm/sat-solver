@@ -45,42 +45,45 @@ function readFormula(fileName) {
     result.variables = variables
   }
   return result
-    }
+}
 
-    function readClauses(text){
-            let a = []
-        let b = 0
-        let c = []
-     for(i = 0;i<text.length;i++){
-    if(!(text[i].charAt(0) == 'c' || text[i].charAt(0) == 'p')){
-     c = text[i].replace("0", "")
-     c = c.split(" ")
-     c.length = c.length -1
-    a[b] = c
-    b++; 
-    }
-    }
-    return a 
-      }
-
-      function readVariables(clauses){
-      let maior = 0
-    variables = []
-    for(i=0; i<clauses.length;i++){
-    for(j=0; j<clauses[i].length;j++){
-      if(clauses[i][j] != '-'){
-        let number =clauses[i][j]
-        if(number>maior){ 
-         maior = number
+  function readClauses(text){
+         let a = []
+      let b = 0
+      let c = []
+   for(i = 0;i<text.length;i++){
+      if(!(text[i].charAt(0) == 'c' || text[i].charAt(0) == 'p')){
+        c = text[i].replace("0", "")
+        c = c.split(" ")
+        c.length = c.length -1
+      if(c.length !=0){
+        a[b] = c
+         b++; 
         }
       }
     }
+  return a 
+  }
+
+  function readVariables(clauses){
+    let maior = 0
+    variables = []
+    
+    for(i=0; i<clauses.length;i++){
+      for(j=0;j<clauses[i].length; j++){
+        clauses[i][j] = parseInt(clauses[i][j])  
+        clauses[i][j] = Math.abs(clauses[i][j])
+        if(clauses[i][j] > maior){
+          maior  = clauses[i][j]
+        }
+         clauses[i][j] = '' + clauses[i][j]
+      } 
     }
     for(k=0; k<maior; k++){
      variables[k] = 0
     }
     return variables
-    }
+  }
 
   function checkProblemSpecification(text, clauses, variables){
       let bb =[]
