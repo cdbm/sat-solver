@@ -4,25 +4,76 @@
  * 
  * Written by Fernando Castor in November/2017. 
  */
+
 exports.solve = function(fileName) {
-  let formula = propsat.readFormula(fileName)
+  let formula = readFormula(fileName)
   let result = doSolve(formula.clauses, formula.variables)
   return result // two fields: isSat and satisfyingAssignment
 }
 
 // Receives the current assignment and produces the next one
-function nextAssignment(currentAssignment) {
-  // implement here the code to produce the next assignment based on currentAssignment. 
+function nextAssignment(currentAssignment, tam) {
+  var bin = decpbin(currentAssignment)
+  newAssignment = []
+  for(j=0; j<tam; j++){
+   newAssignment[j] =  0
+  }
+  var tambin = bin.length
+  while(tambin>0){
+    newAssignment[tam-1] = parseInt(bin.charAt(tambin-1))
+  tambin--
+  tam--
+  }
   return newAssignment
 }
 
 function doSolve(clauses, assignment) {
-  let isSat = false
-  while ((!isSat) && /* must check whether this is the last assignment or not*/) {
-    // does this assignment satisfy the formula? If so, make isSat true. 
-
-    // if not, get the next assignment and try again. 
-    assignment = nextAssignment(assignment)
+ let isSat = false
+ let i = 0
+ let x = assignment.length
+ let numeral
+ let neg = false
+ let temTrue = false
+ let clausaOK = false
+ let prob = Math.pow(2, assignment.length)
+  while ((!isSat) && (i<prob)) {
+    
+    clausaOK = true
+    for(j=0; j<clauses.length; j++){
+      temTrue = false
+      for(k=0; k<clauses[j].length;k++){
+        
+        numeral = clauses[j][k]
+        neg = false
+        if(numeral<0){
+          neg = true
+        }  
+        numeral = Math.abs(numeral)
+        for(l=0; l<assignment.length;l++){
+          if(l == numeral-1){
+            if(assignment[l] == 0){
+                if(neg){
+                  temTrue = true
+                }
+            }else{
+              if(!neg){
+                temTrue = true
+              }
+            } 
+          }
+        }
+      }
+      if(!temTrue){
+        clausaOK = false
+      }
+    }
+    
+    if(!clausaOK){
+    assignment = nextAssignment(i, x)
+    }else{
+      isSat = true
+    }  
+  i++
   }
   let result = {'isSat': isSat, satisfyingAssignment: null}
   if (isSat) {
@@ -48,6 +99,7 @@ function readFormula(fileName) {
 }
 
   function readClauses(text){
+    
          let a = []
       let b = 0
       let c = []
@@ -56,27 +108,34 @@ function readFormula(fileName) {
         c = text[i].replace("0", "")
         c = c.split(" ")
         c.length = c.length -1
-      if(c.length !=0){
-        a[b] = c
+      
+      if(c.length > 0){
+         a[b] = c
          b++; 
+       }
+        
         }
       }
-    }
-  return a 
+
+
+    
+    return a
   }
+  
+  
 
   function readVariables(clauses){
     let maior = 0
     variables = []
-    
+   let number 
     for(i=0; i<clauses.length;i++){
       for(j=0;j<clauses[i].length; j++){
-        clauses[i][j] = parseInt(clauses[i][j])  
-        clauses[i][j] = Math.abs(clauses[i][j])
-        if(clauses[i][j] > maior){
-          maior  = clauses[i][j]
+        number = parseInt(clauses[i][j])
+        number = Math.abs(clauses[i][j])
+        if(number > maior){
+          maior  = number
         }
-         clauses[i][j] = '' + clauses[i][j]
+        
       } 
     }
     for(k=0; k<maior; k++){
@@ -98,9 +157,28 @@ function readFormula(fileName) {
           achou = true
         }
       }
+    if(achou){
       if(clausesnumber == clauses.length && variablesnumber == variables.length){
         return true
       }else{
         return false
       }
+    }else{
+      return true
     }
+    }
+
+    function decpbin(a) {
+    if (a == 0) {
+      return "0";
+    } else if (a == 1) {
+      return "1";
+    } else if (a / 2 == 1) {
+      return "1" + (a % 2);
+    } else if (a % 2 == 1) {
+      return decpbin(Math.floor(a / 2)) + "1";
+    } else {
+      return decpbin(Math.floor(a / 2)) + "0";
+    }
+  }
+
