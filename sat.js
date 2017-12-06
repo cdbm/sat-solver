@@ -13,17 +13,21 @@ exports.solve = function(fileName) {
 
 // Receives the current assignment and produces the next one
 function nextAssignment(currentAssignment, tam) {
-  var bin = decpbin(currentAssignment)
+  //recebe um numero inteiro, referente a atual tentativa
+  //numa ordem de 2^n, sendo n o numero de variaveis
+  var bin = decpbin(currentAssignment) // pego esse inteiro e trago para binario
   newAssignment = []
   for(j=0; j<tam; j++){
    newAssignment[j] =  0
   }
+
   var tambin = bin.length
   while(tambin>0){
     newAssignment[tam-1] = parseInt(bin.charAt(tambin-1))
   tambin--
   tam--
-  }
+  }//coloco os chars desse binario em um array
+
   return newAssignment
 }
 
@@ -35,40 +39,40 @@ function doSolve(clauses, assignment) {
  let neg = false
  let temTrue = false
  let clausaOK = false
- let prob = Math.pow(2, assignment.length)
+ let prob = Math.pow(2, assignment.length) 
   while ((!isSat) && (i<prob)) {
     
     clausaOK = true
     for(j=0; j<clauses.length; j++){
       temTrue = false
       for(k=0; k<clauses[j].length;k++){
-        
-        numeral = clauses[j][k]
+        // entro na clausa e a percorro 
+        numeral = clauses[j][k] 
         neg = false
         if(numeral<0){
-          neg = true
+          neg = true 
         }  
         numeral = Math.abs(numeral)
         for(l=0; l<assignment.length;l++){
-          if(l == numeral-1){
+          if(l == numeral-1){ //procuro a posição do assigment da atual variavel
             if(assignment[l] == 0){
-                if(neg){
+                if(neg){ //atribuição de v e f 
                   temTrue = true
                 }
             }else{
               if(!neg){
-                temTrue = true
+                temTrue = true 
               }
             } 
           }
         }
       }
       if(!temTrue){
-        clausaOK = false
+        clausaOK = false //se não há valores de true na clausula, então ela não esta ok
       }
     }
     
-    if(!clausaOK){
+    if(!clausaOK){ //se há alguma clausula falsa, proximo assignment 
     assignment = nextAssignment(i, x)
     }else{
       isSat = true
@@ -83,10 +87,11 @@ function doSolve(clauses, assignment) {
 }
   
 function readFormula(fileName) { 
+   //chamando o modulo readFileSync
     let f = fileName
     let fs = require ('fs')
     let content = fs.readFileSync(f).toString()
-    let text = content.split('\n')
+    let text = content.split('\n') //text vira um array divido por linhas 
     let clauses = readClauses(text)
     let variables = readVariables(clauses)
     let specOk = checkProblemSpecification(text, clauses, variables)
@@ -100,15 +105,16 @@ function readFormula(fileName) {
 
   function readClauses(text){
     
-         let a = []
+      let a = []
       let b = 0
       let c = []
+
    for(i = 0;i<text.length;i++){
-      if(!(text[i].charAt(0) == 'c' || text[i].charAt(0) == 'p')){
-        c = text[i].replace("0", "")
-        c = c.split(" ")
-        c.length = c.length -1
-      
+      if(!(text[i].charAt(0) == 'c' || text[i].charAt(0) == 'p')){ //procuro as linhas que so tem as variaveis
+        c = text[i].replace("0", "")   // retiro o 0
+        c = c.split(" ") // divido a linha em elemntos unitários,
+        c.length = c.length -1 // o array tinha um elemento a mais, resquicio do 0
+      // colocando em a
       if(c.length > 0){
          a[b] = c
          b++; 
@@ -129,16 +135,16 @@ function readFormula(fileName) {
     variables = []
    let number 
     for(i=0; i<clauses.length;i++){
-      for(j=0;j<clauses[i].length; j++){
-        number = parseInt(clauses[i][j])
-        number = Math.abs(clauses[i][j])
+      for(j=0;j<clauses[i].length; j++){  //percorro todos os elentos de clauses
+        number = parseInt(clauses[i][j])  //trago pra inteiro positivo  
+          number = Math.abs(clauses[i][j])  
         if(number > maior){
-          maior  = number
+          maior  = number // comparo pra poder salvar o maior numero possivel
         }
         
       } 
     }
-    for(k=0; k<maior; k++){
+    for(k=0; k<maior; k++){ // crio um array do tamanho do maior
      variables[k] = 0
     }
     return variables
@@ -169,13 +175,14 @@ function readFormula(fileName) {
     }
 
     function decpbin(a) {
+      //transforma decimal para binario 
     if (a == 0) {
       return "0";
     } else if (a == 1) {
       return "1";
-    } else if (a / 2 == 1) {
+    } else if (a / 2 == 1) {//casos base
       return "1" + (a % 2);
-    } else if (a % 2 == 1) {
+    } else if (a % 2 == 1) { // vou dividindo o numero e concatenando seus restos até chegar ao caso base
       return decpbin(Math.floor(a / 2)) + "1";
     } else {
       return decpbin(Math.floor(a / 2)) + "0";
