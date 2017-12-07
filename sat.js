@@ -105,15 +105,16 @@ function readFormula(fileName) {
 
   function readClauses(text){
     
+       
       let a = []
       let b = 0
       let c = []
 
    for(i = 0;i<text.length;i++){
       if(!(text[i].charAt(0) == 'c' || text[i].charAt(0) == 'p')){ //procuro as linhas que so tem as variaveis
-        c = text[i].replace("0", "")   // retiro o 0
+        c = text[i].replace(/\s{2,}/g, ' ')  
         c = c.split(" ") // divido a linha em elemntos unitários,
-        c.length = c.length -1 // o array tinha um elemento a mais, resquicio do 0
+        c.length = c.length -1 // retiro o 0
       // colocando em a
       if(c.length > 0){
          a[b] = c
