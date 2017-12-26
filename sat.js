@@ -2,7 +2,7 @@
  * This file should be placed at the node_modules sub-directory of the directory where you're 
  * executing it.
  * 
- * Written by Fernando Castor in November/2017. 
+ * Written by Christian Davi in November/2017. 
  */
 
 exports.solve = function(fileName) {
