@@ -1,0 +1,19 @@
+{
+  "name": "sat-solver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "propsat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdbm/sat-solver.git"
+  },
+  "author": "Christian Moura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cdbm/sat-solver/issues"
+  },
+  "homepage": "https://github.com/cdbm/sat-solver#readme"
+}
